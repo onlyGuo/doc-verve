@@ -9,7 +9,7 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api/v1': {
-        target: 'http://localhost:8082', //API服务器的地址
+        target: 'https://doc.icoding.ink', //API服务器的地址
         changeOrigin: true,
         ws: true,
       },

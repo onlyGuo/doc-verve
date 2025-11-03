@@ -80,7 +80,7 @@
         </a>
     </div>
     <div class="content-nav-more">
-        <a class="content-nav-more-text">查看更多</a>
+        <a class="content-nav-more-text" href="/doc/1-1">查看更多</a>
     </div>
 </div>
 <div style="height: 80px"></div>

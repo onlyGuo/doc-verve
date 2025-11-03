@@ -8,8 +8,8 @@ const fromData = ref({
   password: ''
 })
 const login = () => {
-  api.post('/api/v1/user/login', fromData.value).then(res => {
-    localStorage.setItem('login-info', res)
+  api.post('user/login', fromData.value).then(res => {
+    localStorage.setItem('login-info', JSON.stringify(res))
     router.replace({
       path: '/admin'
     })

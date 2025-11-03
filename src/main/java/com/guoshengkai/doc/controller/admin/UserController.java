@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/user")
+@RequestMapping("api/v2/user")
 public class UserController {
 
     @Resource
@@ -33,8 +33,8 @@ public class UserController {
     public Map<String, Object> login(@RequestBody User user) {
         if (userConfig.getUsername().equals(user.getUsername()) && userConfig.getPassword().equals(user.getPassword())) {
             Map<String, Object> map = new HashMap<>();
-            map.put("username", user.getUsername());
-            map.put("nickname", user.getNickname());
+            map.put("username", userConfig.getUsername());
+            map.put("nickname", userConfig.getNickname());
             String md5 = MD5.getMd5(user.getUsername() + "." + user.getPassword());
             map.put("token", Base64.getEncoder().encodeToString(
                     (md5 + "." + System.currentTimeMillis()).getBytes(StandardCharsets.UTF_8)

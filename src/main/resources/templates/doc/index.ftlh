@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{主标题}} - AI图书馆</title>
+    <title><#if article ??>${article.title} - </#if>${classify.name} - AI图书馆</title>
     <link
             rel="stylesheet"
-            href="//cdn.jsdelivr.net/npm/element-plus/dist/index.css"
+            href="${request.contextPath}/libs/element-plus/index.css"
     />
     <!-- Import Vue 3 -->
-    <script src="//cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="${request.contextPath}/libs/vue@3/index.js"></script>
     <!-- Import component library -->
-    <script src="//cdn.jsdelivr.net/npm/element-plus"></script>
+    <script src="${request.contextPath}/libs/element-plus/index.js"></script>
     <link rel="stylesheet" href="/css/doc-header.css">
     <link rel="stylesheet" href="/highlight/styles/github-dark.css">
+    <link rel="stylesheet" href="/css/github-markdown.css">
 </head>
 <body>
 <div id="app">
@@ -21,52 +22,70 @@
             <el-header class="page-header">
                 <div class="logo">AI图书馆</div>
                 <ul class="nav-list">
-                    <li><a href="javascript:void(0);">栏目1</a></li>
-                    <li class="active">
-                        <a href="javascript:void(0);">栏目2</a>
-                        <ul class="nav-dropdown">
-                            <li class="submenu active"><a href="javascript:void(0);">子栏目2</a></li>
-                            <li class="submenu"><a href="javascript:void(0);">子栏目2</a></li>
-                            <li class="submenu"><a href="javascript:void(0);">子栏目2</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="javascript:void(0);">栏目3</a></li>
+                    <#list classifyList as cls>
+                        <li class="<#if cls.id == classify.id || (cls.id == classify.parentId && classify.parentId != 0)>active</#if>">
+                            <#if cls.children ??>
+                                <a href="javascript:void(0);">${cls.name}</a>
+                            <#else>
+                                <a href="/doc/${cls.id}-0">${cls.name}</a>
+                            </#if>
+
+                            <#if cls.children ??>
+                                <ul class="nav-dropdown">
+                                    <#list cls.children as subSlassify>
+                                        <li class="submenu <#if subSlassify.id == cls.id>active</#if>">
+                                            <a href="/doc/${subSlassify.id}-0">${subSlassify.name}</a>
+                                        </li>
+                                    </#list>
+                                </ul>
+                            </#if>
+                        </li>
+                    </#list>
                 </ul>
             </el-header>
             <el-container class="main-container">
                 <el-aside>
                     <el-scrollbar style="max-height: calc(100vh - 61px); padding: 0 32px 0 12px;">
                         <div style="margin: 10px 0; font-size: 18px;">
-                            栏目名称
+                            ${classify.name}
                         </div>
-                        <a class="left-nav-list-item active">
-                            章节 111
-                        </a>
-                        <a v-for="item in 200" :key="item" class="left-nav-list-item" style="display: block">
-                            章节 {{ item }}
-                        </a>
+                        <#list articleTitles as articleTitle>
+                            <a href="/doc/${articleTitle.classifyId}-${articleTitle.id}" class="left-nav-list-item <#if articleTitle.id == article.id>active</#if>">
+                                ${articleTitle.title}
+                            </a>
+                        </#list>
                     </el-scrollbar>
                 </el-aside>
 
                 <el-main style="padding: 0;">
                     <el-scrollbar style="max-height: calc(100vh - 61px)" class="content">
                         <div style="max-width: 1400px; margin: auto;">
-                            <div class="title">Table of Contents</div>
+                            <div class="title">${article.title}</div>
                             <div class="sub-title">
-                                <div class="create-time">创建时间: 2222-22-22 22:22:22</div>
-                                <div class="author">作者: OhPanda</div>
+                                <div class="create-time">创建时间: ${article.getCreateTimeStr()}</div>
+                                <div class="author">作者: ${article.author ! 'OhPanda'}</div>
                             </div>
-                            <div class="content-content">
+                            <div class="content-content markdown-body">
                                 <#noautoesc>
                                     ${content}
                                 </#noautoesc>
                             </div>
                             <div class="content-footer">
-                                <div class="before q-nav">
-                                    <span>上一篇</span> <a href="javascript:void(0);">《惺惺惜惺惺》</a>
+                                <div class="before q-nav" <#if previousArticle??>onclick="window.location.href='/doc/${previousArticle.classifyId}-${previousArticle.id}'"</#if>>
+                                    <span>上一篇</span>
+                                    <#if previousArticle??>
+                                        <a href="/doc/${previousArticle.classifyId}-${previousArticle.id}">${previousArticle.title}</a>
+                                    <#else>
+                                        <a href="javascript:void(0);">无</a>
+                                    </#if>
                                 </div>
-                                <div class="after q-nav">
-                                    <span>下一篇</span> <a href="javascript:void(0);">《惺惺惜惺惺》</a>
+                                <div class="after q-nav" <#if nextArticle??>onclick="window.location.href='/doc/${nextArticle.classifyId}-${nextArticle.id}'"</#if>>
+                                    <span>下一篇</span>
+                                    <#if nextArticle??>
+                                        <a href="/doc/${nextArticle.classifyId}-${nextArticle.id}">${nextArticle.title}</a>
+                                    <#else>
+                                        <a href="javascript:void(0);">无</a>
+                                    </#if>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +111,7 @@
 <script src="/highlight/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 <style>
-    @import url("https://fontsapi.zeoseven.com/442/main/result.css");
+    /*@import url("https://fontsapi.zeoseven.com/442/main/result.css");*/
     html,body,h1, h2, h3, h4, h5, h6,p, ul, li{
         margin: 0;
         padding: 0;
@@ -102,7 +121,7 @@
         scroll-behavior: smooth;
         background: white;
         color: #262B47;
-        font-family: "Maple Mono NF CN", Quotes, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;;
+        /*font-family: "Maple Mono NF CN", Quotes, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;;*/
     }
     .left-nav-list-item{
         display: block;
@@ -175,10 +194,20 @@
     .content-content img{
         max-width: 100%;
     }
+    .content-content table {
+        border-collapse: collapse; /* 合并边框，避免双线 */
+        width: 100%; /* 可选，让表格宽度自适应 */
+    }
+
+    .content-content th, td {
+        border: 1px solid #CCC; /* 黑色细实线 */
+        padding: 8px;           /* 单元格内边距 */
+        text-align: left;       /* 可根据需要修改对齐方式 */
+    }
     .content-content h1,h2,h3{
         font-weight: bold;
         margin-bottom: 10px;
-        margin-top: 15px;
+        margin-top: 35px;
     }
     /*.content-content h1:before,h2:before,h3:before {*/
     /*    */
@@ -186,6 +215,9 @@
     .content-content h4,h5,h6{
         margin-top: 10px;
         margin-bottom: 5px;
+    }
+    .content-content strong{
+        font-weight: bold;
     }
     .content-content p{
         margin: 5px 0 7px 0;
@@ -221,11 +253,18 @@
         background-color: #ececec;
         border-left: 5px solid #35b378;
     }
-    .content-content ul{
-        list-style: none;
-        padding-left: 0;
-        margin: 15px 0;
+    .content-content hr{
+        display: block;
+        height: 0;
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 20px 0;
     }
+    /*.content-content ul{*/
+    /*    list-style: none;*/
+    /*    padding-left: 0;*/
+    /*    margin: 15px 0;*/
+    /*}*/
     .content-content pre{
         display: block;
         background-color: #2b2b2b;
@@ -239,7 +278,7 @@
         color: #fff;
         padding: 0;
         margin: 0;
-        font-family: "Maple Mono NF CN", Quotes, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif!important;
+        /*font-family: "Maple Mono NF CN", Quotes, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif!important;*/
     }
 
 

@@ -5,6 +5,7 @@ spring:
     name: doc-verve
   freemarker:
     cache: false
+    request-context-attribute: request
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${ENV.DATABASE.USER:root}
@@ -12,6 +13,8 @@ spring:
     url: jdbc:mysql://${ENV.DATABASE.URL:172.17.0.1:3306}/${ENV.DATABASE.NAME:doc_verve}?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
 mybatis:
   mapper-locations: classpath:mappers/*.xml
+
+
 
 user:
   username: admin

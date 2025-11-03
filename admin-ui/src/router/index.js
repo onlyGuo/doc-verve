@@ -6,6 +6,10 @@ import Article from "../views/admin/Article.vue";
 
 const routes = [
     {
+        path: '/',
+        redirect: '/admin',
+    },
+    {
         path: '/admin/login',
         name: 'Login',
         component: Login

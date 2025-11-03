@@ -3,7 +3,9 @@ package com.guoshengkai.doc.entitys;
 import com.guoshengkai.doc.core.annotation.po.FieldName;
 import com.guoshengkai.doc.core.annotation.po.ID;
 import com.guoshengkai.doc.core.annotation.po.TableName;
+import com.guoshengkai.doc.core.annotation.po.TempField;
 import com.guoshengkai.doc.core.beans.PO;
+import com.guoshengkai.doc.core.util.DateUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,7 +43,13 @@ public class Article extends PO {
     @FieldName(name = "UPDATE_TIME")
     private Date updateTime;
 
+    @TempField
+    private String createTimeStr;
 
-
-
+    public String getCreateTimeStr() {
+        if (createTime != null) {
+            createTimeStr = DateUtil.formatAll(createTime);
+        }
+        return DateUtil.formatAll(new Date());
+    }
 }

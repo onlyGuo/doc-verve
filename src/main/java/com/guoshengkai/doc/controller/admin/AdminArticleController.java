@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/article")
+@RequestMapping("api/v2/article")
 public class AdminArticleController {
 
     @Resource
@@ -22,6 +22,11 @@ public class AdminArticleController {
     @PostMapping
     public Article newArticle(@RequestBody Article article) {
         return articleService.createArticle(article);
+    }
+
+    @PutMapping
+    public void updateArticle(@RequestBody Article article) {
+        articleService.updateArticle(article);
     }
 
 }

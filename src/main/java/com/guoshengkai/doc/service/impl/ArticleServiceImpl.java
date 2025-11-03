@@ -1,5 +1,6 @@
 package com.guoshengkai.doc.service.impl;
 
+import com.guoshengkai.doc.config.UserConfig;
 import com.guoshengkai.doc.core.beans.Method;
 import com.guoshengkai.doc.core.sql.where.C;
 import com.guoshengkai.doc.dao.ArticleDao;
@@ -9,7 +10,9 @@ import com.guoshengkai.doc.entitys.ArticleTitle;
 import com.guoshengkai.doc.service.ArticleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,6 +23,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleTitleDao articleTitleDao;
+
+    @Resource
+    private UserConfig userConfig;
 
 
     @Override
@@ -39,6 +45,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article createArticle(Article article) {
+        if (!StringUtils.hasText(article.getAuthor())){
+            article.setAuthor(userConfig.getNickname());
+        }
+        article.setCreateTime(new Date());
         articleDao.add(article);
         return article;
     }

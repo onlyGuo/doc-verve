@@ -7,6 +7,7 @@ import 'element-plus/theme-chalk/el-message-box.css'
 
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
+axios.defaults.baseURL = '/api/v2/'
 
 axios.interceptors.request.use(
     config => {
@@ -14,8 +15,8 @@ axios.interceptors.request.use(
         if(loginInfoStr){
             try{
                 let loginInfo = JSON.parse(loginInfoStr);
-                config.headers['X-User-Name'] = loginInfo.user.username;
-                config.headers['X-User-Nick'] = loginInfo.user.nickname;
+                config.headers['X-User-Name'] = loginInfo.username;
+                config.headers['X-User-Nick'] = loginInfo.nickname;
                 let token = loginInfo.token;
                 if (token){
                     config.headers['Authorization'] = 'Bearer ' + token

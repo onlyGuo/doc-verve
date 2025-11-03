@@ -3,6 +3,7 @@ package com.guoshengkai.doc.config;
 import com.guoshengkai.doc.core.SpringBootApplicationUtil;
 import com.guoshengkai.doc.core.auth.NoLogin;
 import com.guoshengkai.doc.core.exception.AccessOAuthException;
+import com.guoshengkai.doc.core.util.MD5;
 import com.guoshengkai.doc.core.util.ThreadUtil;
 import com.guoshengkai.doc.entitys.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +51,7 @@ public class RequestThreadFilterConf implements HandlerInterceptor {
         if (!StringUtils.isEmpty(token)){
             try {
                 String[] md5 = new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8).split("\\.");
-                if (md5[0].equals(userConfig.getUsername() + "." + userConfig.getPassword())){
+                if (md5[0].equals(MD5.getMd5(userConfig.getUsername() + "." + userConfig.getPassword()))){
                     if (System.currentTimeMillis() - Long.parseLong(md5[1]) < 60 * 60 * 1000 * 24 * 7){
                         user = new User();
                         user.setUsername(userConfig.getUsername());
